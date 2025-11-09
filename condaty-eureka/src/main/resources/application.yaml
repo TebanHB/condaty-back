@@ -1,3 +1,13 @@
+server:
+  port: 8761  # Puerto por defecto del servidor Eureka
+
 spring:
   application:
     name: condaty-eureka
+
+eureka:
+  client:
+    register-with-eureka: false   # El servidor no se registra a sí mismo
+    fetch-registry: false         # No intenta obtener registros de otro servidor
+  server:
+    enable-self-preservation: false # (Opcional, útil en desarrollo)
