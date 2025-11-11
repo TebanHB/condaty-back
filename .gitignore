@@ -131,3 +131,4 @@ redis-data/
 local/
 tmp/
 *.tmp
+*.md

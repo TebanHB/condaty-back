@@ -1,7 +1,45 @@
 spring:
   application:
     name: condaty-gateway
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true  # Habilita el descubrimiento automático de servicios
+          lower-case-service-id: true  # Usa nombres en minúsculas para las rutas
+      routes:
+        # Microservicio de Autenticación - PÚBLICO
+        - id: auth-service
+          uri: lb://AUTH-SERVICE  # Nombre del servicio en Eureka
+          predicates:
+            - Path=/auth/**
+          filters:
+            - StripPrefix=0
+        
+        # Otros microservicios - PROTEGIDOS (descubiertos automáticamente)
+        # El discovery.locator los manejará automáticamente
+        # Ejemplo: lb://NOMBRE-SERVICIO/** será accesible en /nombre-servicio/**
+
+server:
+  port: 8080
+    
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+jwt:
+  secret: mySecretKeyForJWTTokenGenerationAndValidation1234567890
+  expiration: 86400000  # 24 horas en milisegundos
+
+logging:
+  level:
+    '[org.springframework.cloud.gateway]': DEBUG
+    '[org.springframework.security]': DEBUG
+    '[com.condaty]': DEBUG
