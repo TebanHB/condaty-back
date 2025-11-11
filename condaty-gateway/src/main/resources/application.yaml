@@ -42,3 +42,9 @@ logging:
     '[org.springframework.cloud.gateway]': DEBUG
     '[org.springframework.security]': DEBUG
     '[com.condaty]': DEBUG
+    
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
