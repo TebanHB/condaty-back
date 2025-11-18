@@ -40,3 +40,17 @@ logging:
     '[org.springframework.cloud.gateway]': DEBUG
     '[org.springframework.security]': DEBUG
     '[com.condaty]': DEBUG
+
+# Swagger/OpenAPI Configuration
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operations-sorter: alpha
+    tags-sorter: alpha
+    urls:
+      - name: auth-service
+        url: http://localhost:8081/v3/api-docs
+  show-actuator: false

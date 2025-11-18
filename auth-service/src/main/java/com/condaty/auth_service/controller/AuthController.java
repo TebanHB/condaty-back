@@ -1,5 +1,12 @@
 package com.condaty.auth_service.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/auth")
 @Validated
 @Slf4j
+@Tag(name = "Authentication", description = "API de autenticación y gestión de sesiones")
 public class AuthController {
 
     @Autowired
@@ -38,6 +46,15 @@ public class AuthController {
      * Endpoint para login
      * POST /api/auth/login
      */
+    @Operation(summary = "Iniciar sesión", description = "Autentica un usuario con su documento (CI/DNI/Pasaporte) y contraseña")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login exitoso",
+                    content = @Content(schema = @Schema(implementation = LoginResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Credenciales inválidas",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+    })
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         log.info("Solicitud de login recibida para UUID: {}", loginRequest.getUuid());
@@ -79,6 +96,14 @@ public class AuthController {
      * Endpoint para logout
      * POST /api/auth/logout
      */
+    @Operation(summary = "Cerrar sesión", description = "Invalida el token JWT actual del usuario", 
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Logout exitoso",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Token no proporcionado",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+    })
     @PostMapping("/logout")
     public ResponseEntity<?> logout(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -125,6 +150,14 @@ public class AuthController {
      * Endpoint para verificar el estado de autenticación
      * GET /api/auth/me
      */
+    @Operation(summary = "Obtener usuario actual", description = "Devuelve información del usuario autenticado",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario autenticado",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+            @ApiResponse(responseCode = "401", description = "No autenticado",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+    })
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
@@ -146,6 +179,9 @@ public class AuthController {
      * Health check del servicio de autenticación
      * GET /api/auth/health
      */
+    @Operation(summary = "Health Check", description = "Verifica que el servicio esté funcionando")
+    @ApiResponse(responseCode = "200", description = "Servicio activo",
+            content = @Content(schema = @Schema(implementation = MessageResponse.class)))
     @GetMapping("/health")
     public ResponseEntity<?> health() {
         return ResponseEntity.ok(MessageResponse.builder()
@@ -158,6 +194,13 @@ public class AuthController {
      * Endpoint para registrar un nuevo usuario
      * POST /api/auth/register
      */
+    @Operation(summary = "Registrar usuario", description = "Crea un nuevo usuario en el sistema. El password y email son opcionales.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente",
+                    content = @Content(schema = @Schema(implementation = RegisterResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos o usuario ya existe",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+    })
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
         log.info("Solicitud de registro para documento: {}", registerRequest.getUuid());

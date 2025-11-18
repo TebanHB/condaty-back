@@ -1,11 +1,12 @@
 package com.condaty.condaty_gateway.config;
 
-import com.condaty.condaty_gateway.security.SecurityContextRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+
+import com.condaty.condaty_gateway.security.SecurityContextRepository;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -28,6 +29,9 @@ public class SecurityConfig {
                         // Rutas públicas - Actuator y health checks
                         .pathMatchers("/actuator/**").permitAll()
                         .pathMatchers("/*/actuator/**").permitAll()  // Actuator de microservicios
+                        
+                        // Rutas públicas - Swagger/OpenAPI
+                        .pathMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/webjars/**").permitAll()
                         
                         // Todas las demás rutas requieren autenticación JWT
                         .anyExchange().authenticated()
