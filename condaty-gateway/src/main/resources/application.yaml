@@ -7,21 +7,19 @@ spring:
       port: 6379
   cloud:
     gateway:
-      server:
-        webflux:
-          discovery:
-            locator:
-              enabled: true        # habilita el descubrimiento automático
-              lower-case-service-id: true
-          routes:
-            # Microservicio de Autenticación - PÚBLICO
-            - id: auth-service
-              uri: lb://AUTH-SERVICE
-              predicates:
-                - Path=/auth/**
-              filters:
-                - StripPrefix=0
-          # Los demás microservicios serán descubiertos automáticamente por Eureka
+      discovery:
+        locator:
+          enabled: true        # habilita el descubrimiento automático
+          lower-case-service-id: true
+      routes:
+        # Microservicio de Autenticación - PÚBLICO
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
+          filters:
+            - StripPrefix=1  # Elimina /auth del path antes de enrutar
+        # Los demás microservicios serán descubiertos automáticamente por Eureka
 
 server:
   port: 8080

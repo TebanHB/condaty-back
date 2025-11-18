@@ -21,8 +21,8 @@ import lombok.NoArgsConstructor;
 public class Person {
 
     @Id
-    @Column(name = "uuid", length = 36, nullable = false)
-    private String uuid;
+    @Column(name = "uuid", length = 50, nullable = false)
+    private String uuid; // Documento de identidad (CI, DNI, Pasaporte)
 
     @Column(name = "first_name", length = 100, nullable = false)
     private String firstName;

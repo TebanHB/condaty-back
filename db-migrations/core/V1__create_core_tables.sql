@@ -6,7 +6,7 @@
 -- Tabla: persons
 -- Almacena información de todas las personas del sistema
 CREATE TABLE IF NOT EXISTS persons (
-    uuid VARCHAR(36) PRIMARY KEY,
+    uuid VARCHAR(50) PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
     second_name VARCHAR(100),
     paternal_name VARCHAR(100) NOT NULL,
@@ -30,7 +30,7 @@ CREATE INDEX idx_persons_full_name ON persons(first_name, second_name, paternal_
 
 -- Comentarios
 COMMENT ON TABLE persons IS 'Almacena información de todas las personas del sistema (usuarios, residentes, referencias)';
-COMMENT ON COLUMN persons.uuid IS 'Identificador único público de la persona (usado en APIs)';
+COMMENT ON COLUMN persons.uuid IS 'Número de documento de identidad (CI, DNI, Pasaporte) - Identificador único de la persona';
 COMMENT ON COLUMN persons.password IS 'Hash de contraseña - NULL si la persona no tiene acceso al sistema';
 COMMENT ON COLUMN persons.email IS 'Email - NULL si la persona no requiere login o notificaciones';
 
