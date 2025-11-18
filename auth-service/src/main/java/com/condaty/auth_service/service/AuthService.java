@@ -16,6 +16,7 @@ import com.condaty.auth_service.dto.LoginRequest;
 import com.condaty.auth_service.dto.LoginResponse;
 import com.condaty.auth_service.dto.RegisterRequest;
 import com.condaty.auth_service.dto.RegisterResponse;
+import com.condaty.auth_service.dto.TenantDTO;
 import com.condaty.auth_service.entity.Person;
 import com.condaty.auth_service.repository.PersonRepository;
 import com.condaty.auth_service.util.JwtUtil;
@@ -87,15 +88,30 @@ public class AuthService {
 
             log.info("Login exitoso para UUID: {}", person.getUuid());
 
-            // Construir respuesta
-            return new LoginResponse(
+                // Construir lista de tenants para la respuesta
+                java.util.List<TenantDTO> tenantDTOs = person.getTenants().stream()
+                    .map(t -> TenantDTO.builder()
+                        .id(t.getId())
+                        .systemId(t.getSystemId())
+                        .name(t.getName())
+                        .schemaName(t.getSchemaName())
+                        .build())
+                    .collect(java.util.stream.Collectors.toList());
+
+                // Construir respuesta con datos completos
+                return new LoginResponse(
                     token,
                     person.getUuid(),
                     person.getFirstName(),
+                    person.getSecondName(),
                     person.getPaternalName(),
+                    person.getMotherName(),
+                    person.getPhone(),
                     person.getEmail(),
-                    jwtUtil.getExpirationTime()
-            );
+                    person.getBirthday(),
+                    jwtUtil.getExpirationTime(),
+                    tenantDTOs
+                );
 
         } catch (BadCredentialsException e) {
             log.error("Credenciales inválidas para UUID: {}", loginRequest.getUuid());

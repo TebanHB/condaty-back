@@ -44,11 +44,11 @@ CREATE TABLE IF NOT EXISTS tenants (
     schema_name VARCHAR(63) NOT NULL UNIQUE,
     
     -- Configuración de conexión a BD
-    db_host VARCHAR(255) NOT NULL DEFAULT 'localhost',
-    db_port INTEGER NOT NULL DEFAULT 5432,
-    db_name VARCHAR(100) NOT NULL,
-    db_username VARCHAR(100) NOT NULL,
-    db_password_encrypted TEXT NOT NULL,
+    db_host VARCHAR(255) DEFAULT 'localhost',
+    db_port INTEGER DEFAULT 5432,
+    db_name VARCHAR(100),
+    db_username VARCHAR(100),
+    db_password_encrypted TEXT,
     
     -- Metadata
     timezone VARCHAR(50) DEFAULT 'America/La_Paz',

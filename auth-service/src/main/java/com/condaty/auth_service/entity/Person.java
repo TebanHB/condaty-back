@@ -2,10 +2,16 @@ package com.condaty.auth_service.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -56,4 +62,12 @@ public class Person {
 
     @Column(name = "is_active", nullable = false, insertable = false)
     private Boolean isActive;
+
+        @ManyToMany(fetch = FetchType.LAZY)
+        @JoinTable(name = "person_tenant",
+            joinColumns = @JoinColumn(name = "person_uuid"),
+            inverseJoinColumns = @JoinColumn(name = "tenant_id")
+        )
+        @Builder.Default
+        private Set<Tenant> tenants = new HashSet<>();
 }
